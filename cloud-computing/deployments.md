@@ -1,24 +1,24 @@
 
 # Table of Contents
 
-1.  [Deployments](#orgd9323b6)
-    1.  [EC2 (Provided OS Images):](#orgc616909)
-        1.  [Custom AMI (Custom OS Images)](#orged869b4)
-    2.  [Lambda:](#orgd0b0dd6)
-    3.  [Docker (Containerization)](#org108b5f7)
-        1.  [Container Engine](#org8e4ebbc)
-        2.  [Container Orchestrators (Kubernetes, Swarm)](#org53ab5cc)
+1.  [Deployments](#org8a0c8d7)
+    1.  [EC2 (Provided OS Images)](#orgc1d6d95)
+        1.  [Custom AMI (Custom OS Images)](#org2b2b65a)
+    2.  [Lambda](#org5b14de6)
+    3.  [Docker (Containerization)](#orgbc64678)
+        1.  [Container Engine](#org7c8cfcc)
+        2.  [Container Orchestrators (Kubernetes, Swarm)](#orga9f3d22)
 
 
 
-<a id="orgd9323b6"></a>
+<a id="org8a0c8d7"></a>
 
 # Deployments
 
 
-<a id="orgc616909"></a>
+<a id="orgc1d6d95"></a>
 
-## EC2 (Provided OS Images):
+## EC2 (Provided OS Images)
 
 Mostly for workloads that require some sort of state to be persisted for a long
 while or long-running collections of tasks.
@@ -40,7 +40,7 @@ deployment:
     -   Configuration files / environment variables
 
 
-<a id="orged869b4"></a>
+<a id="org2b2b65a"></a>
 
 ### Custom AMI (Custom OS Images)
 
@@ -67,9 +67,9 @@ Custom AMIs shorten the required actions/steps during deployment:
     -   Configuration files / environment variables
 
 
-<a id="orgd0b0dd6"></a>
+<a id="org5b14de6"></a>
 
-## Lambda:
+## Lambda
 
 Mostly for stateless workloads, short bursts of work to be done, and with no
 long-lived state to persist i.e. endpoint access (read record), RPC function
@@ -82,7 +82,7 @@ Lambda functions require the below actions/components during deployment:
     -   Runtime dependencies
 
 
-<a id="org108b5f7"></a>
+<a id="orgbc64678"></a>
 
 ## Docker (Containerization)
 
@@ -112,7 +112,7 @@ application versioned to a specific time. It&rsquo;s repeatable as it combines a
 items you need to run the image pre-configured during build.
 
 
-<a id="org8e4ebbc"></a>
+<a id="org7c8cfcc"></a>
 
 ### Container Engine
 
@@ -131,7 +131,7 @@ difference between virtual machines or EC2 instances:
 > other resources..
 
 
-<a id="org53ab5cc"></a>
+<a id="orga9f3d22"></a>
 
 ### Container Orchestrators (Kubernetes, Swarm)
 
