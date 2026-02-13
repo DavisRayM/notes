@@ -1,0 +1,7 @@
+# Don't allow
+**
+
+# Allow only Markdowns
+!.gitignore
+!*/
+!*/**.md
