@@ -1,160 +1,144 @@
 
 # Table of Contents
 
-1.  [Deployments](#org8a0c8d7)
-    1.  [EC2 (Provided OS Images)](#orgc1d6d95)
-        1.  [Custom AMI (Custom OS Images)](#org2b2b65a)
-    2.  [Lambda](#org5b14de6)
-    3.  [Docker (Containerization)](#orgbc64678)
-        1.  [Container Engine](#org7c8cfcc)
-        2.  [Container Orchestrators (Kubernetes, Swarm)](#orga9f3d22)
+1.  [Deployments](#orgad91680)
+    1.  [EC2 (Provided OS Images)](#org4471f26)
+        1.  [Custom AMI (Custom OS Images)](#org7c667ad)
+    2.  [Lambda](#org31559cb)
+    3.  [Docker (Containerization)](#org2a8af6d)
+        1.  [Container Engine](#org6eb9bb5)
+        2.  [Container Orchestrators (Kubernetes, Swarm)](#org20457e6)
+
+ID:       7e302571-321f-4c6f-909b-7417527d9f8d
 
 
-
-<a id="org8a0c8d7"></a>
+<a id="orgad91680"></a>
 
 # Deployments
 
 
-<a id="orgc1d6d95"></a>
+<a id="org4471f26"></a>
 
 ## EC2 (Provided OS Images)
 
-Mostly for workloads that require some sort of state to be persisted for a long
-while or long-running collections of tasks.
+Primarily used for workloads that need persistent state or for executing long-running tasks.
 
-Typically, virtual machine services require the below actions to be taken during
-deployment:
+Typically, virtual machine services require the following actions during deployment:
 
 -   **Steps**:
-    -   Install language runtime (Node, JVM) & package manager
-    -   Install dependencies (libraries: OpenSSL)
+    -   Install language runtime (Node.js, JVM) and package manager
+    -   Install dependencies (e.g., libraries like OpenSSL)
     -   Create a service definition:
-        -   Something like \`systemd\` to control the service in all its lifecycles
-            (start, stop, restart) and handle server startup / shutdown correctly.
+        -   Use a system manager like \`systemd\` to control the service throughout its lifecycle (start, stop, restart) and properly manage server startup and shutdown.
 -   **Items**:
     -   Build artifacts
         -   Compiled binaries
         -   Script code
         -   Static assets
-    -   Configuration files / environment variables
+    -   Configuration files and environment variables
 
 
-<a id="org2b2b65a"></a>
+<a id="org7c667ad"></a>
 
 ### Custom AMI (Custom OS Images)
 
-A snapshot based on a base OS image, custom-built with required components such
-as runtime, dependencies, and service definition, allowing the image to be
-reusable with just the application-specific items copied over.
+A snapshot based on a base OS image, custom-built with the required components such as runtime, dependencies, and service definitions, allowing for reuse by copying only application-specific items.
 
 Downsides:
 
--   Sharing across accounts can be limited or cumbersome in some cloud providers
-    (e.g. AWS AMI)
--   Can be tied to a specific OS version
--   Dependencies baked into the image can become outdated and require rebuilds
+-   Sharing across accounts may be limited or cumbersome in some cloud providers (e.g., AWS AMI).
+-   Can be tied to a specific OS version.
+-   Dependencies baked into the image can become outdated, necessitating rebuilds.
 
-Custom AMIs shorten the required actions/steps during deployment:
+Custom AMIs simplify the deployment process:
 
 -   **Steps**:
-    -   Install dependencies (libraries: OpenSSL)
+    -   Install dependencies (e.g., libraries like OpenSSL)
 -   **Items**:
     -   Build artifacts
         -   Compiled binaries
         -   Script code
         -   Static assets
-    -   Configuration files / environment variables
+    -   Configuration files and environment variables
 
 
-<a id="org5b14de6"></a>
+<a id="org31559cb"></a>
 
 ## Lambda
 
-Mostly for stateless workloads, short bursts of work to be done, and with no
-long-lived state to persist i.e. endpoint access (read record), RPC function
-(quick data manipulation).
+Ideal for stateless workloads, short bursts of computation, and operations that do not need to maintain long-lived state, such as endpoint access (reading records) or RPC functions (quick data manipulation).
 
-Lambda functions require the below actions/components during deployment:
+Lambda functions require the following components during deployment:
 
 -   Components:
     -   Deployment packages
     -   Runtime dependencies
 
 
-<a id="orgbc64678"></a>
+<a id="org2a8af6d"></a>
 
 ## Docker (Containerization)
 
-Docker images are typically created in layers, containing files or performing
-certain actions:
+Docker images are constructed in layers, containing files or executing specific actions:
 
--   Base image i.e. alpine (minimal), Ubuntu, python:3-alpine, etc.
-    -   Similar conceptually to a base AMI for EC2.
+-   Base image (e.g., alpine, Ubuntu, python:3-alpine).
+    -   Conceptually similar to a base AMI for EC2.
 -   Source files
-    -   Typically some sort of files copied over from the build environment into the
-        image through \`COPY\`.
+    -   Typically includes files copied from the build environment into the image using \`COPY\`.
     -   Examples:
         -   Static files
         -   Source code
 -   Commands
-    -   Commands to run during build steps i.e. \`RUN\`.
+    -   Instructions to run during build steps (e.g., \`RUN\`).
     -   Examples:
-        -   Install some runtime
-        -   (Optional) Compile binary
+        -   Install a runtime
+        -   (Optional) Compile binaries
         -   Install dependencies
 -   Metadata
-    -   What to run once started
-    -   Volumes to mount or use
+    -   Specifies what to execute once the container starts
+    -   Defines which volumes to mount
 
-Once all layers are defined you then have a disk installation &ldquo;image&rdquo; of your
-application versioned to a specific time. It&rsquo;s repeatable as it combines all
-items you need to run the image pre-configured during build.
+Once all layers are defined, you create a disk installation &ldquo;image&rdquo; of your application versioned to a specific point in time. This process is repeatable, as it encapsulates all items needed for running the image, pre-configured during the build.
+
+The main benefits of Docker include:
+
+-   Reduces pre-deployment steps during building; ensuring a correct filesystem layout and required directories, among other aspects.
+-   Facilitates running multiple processes in the same environment while isolating them in their respective sandboxes.
+-   Less resource-intensive than emulating a full virtual machine.
 
 
-<a id="org7c8cfcc"></a>
+<a id="org6eb9bb5"></a>
 
 ### Container Engine
 
-Once an image is built, you can deploy multiple copies of your image using a
-container engine. Environment variables and configuration files are then
-injected into the container when the engine runs the image at runtime.
+After an image is built, you can deploy multiple instances using a container engine. Environment variables and configuration files are injected into the container when the engine executes the image at runtime.
 
-Containers typically run in isolated environments within an OS. This is the big
-difference between virtual machines or EC2 instances:
+Containers operate in isolated environments within an OS. This is the key distinction from virtual machines or EC2 instances:
 
-> Virtual machines are full OS instances and are bulkier, while container images
-> are lightweight. To the process inside the container, it appears to run on its
-> own machine, but it does not have an entire separate computer. Access to the
-> file system, ports, network, and other aspects are controlled by the engine,
-> isolating them to their own sandbox unless explicitly allowed to connect to
-> other resources..
+> Virtual machines are standalone OS instances and are bulkier, whereas container images are lightweight. From the perspective of a process inside a container, it appears to run on its own machine, but it does not operate on a separate physical computer. Access to the file system, ports, networks, and other resources is controlled by the engine, isolating processes in their respective sandboxes unless explicitly allowed to connect to other resources.
 
 
-<a id="orga9f3d22"></a>
+<a id="org20457e6"></a>
 
 ### Container Orchestrators (Kubernetes, Swarm)
 
-Once you have container images, orchestrators like Kubernetes or Docker Swarm
-manage running those containers across one or more machines.
+Once you have container images, orchestrators like Kubernetes or Docker Swarm manage the execution of those containers across multiple machines.
 
 They typically handle:
 
--   Scheduling containers onto available nodes
+-   Scheduling containers on available nodes
 -   Restarting containers if they fail
 -   Scaling the number of replicas up or down
--   Service discovery and load balancing between container instances
--   Rolling updates and, in some cases, rollbacks
+-   Service discovery and load balancing among container instances
+-   Performing rolling updates and, if necessary, rollbacks
 
 Orchestrators work with:
 
--   Container images (built beforehand)
+-   Pre-built container images
 -   Runtime configuration:
     -   Environment variables
     -   Configuration files or mounted volumes
     -   Networking and service definitions
 
-Unlike raw container engines on a single host, orchestrators coordinate
-containers across a cluster of machines, providing higher-level abstractions for
-availability, scaling, and lifecycle management.
+Unlike raw container engines on a single host, orchestrators coordinate containers across a cluster of machines, providing higher-level abstractions for managing containerized applications, including availability, scaling, and lifecycle management.
 
